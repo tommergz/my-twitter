@@ -1,0 +1,129 @@
+.content-container {
+  flex: 0.5;
+  border: 2px solid rgb(116, 110, 110);
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.content {
+  display: flex;
+  position: relative;
+  margin-top: 1em;
+  border-bottom: 1px solid rgb(116, 110, 110);
+  color: rgb(61, 61, 61);
+  padding: 1em;
+}
+
+.content:hover {
+  background-color: rgb(241, 241, 241);
+}
+
+.tweet {
+  margin-left: 0.8em;
+  width: 100%;
+}
+
+.user {
+  display: flex;
+}
+
+.user-name {
+  color: black;
+}
+
+.user-tag {
+  color: rgb(61, 61, 61);
+  margin-left: 0.8em;
+}
+
+.tweet > img {
+  margin-top: .5em;
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+.tweet-icons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1em;
+  width: 80%;
+}
+
+.tweet-settings {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 1em;
+  top: 0px;
+}
+
+.remove-tweet, .edit-tweet {
+  cursor: pointer;
+}
+
+.remove-tweet:hover {
+  color: red;
+}
+
+.edit-tweet:hover {
+  color: blue;
+}
+
+.likes,
+.comments {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.download,
+.retweet {
+  cursor: pointer;
+}
+
+.likes:hover {
+  color: red;
+}
+
+.comments:hover {
+  color: rgb(0, 26, 255);
+}
+
+.download:hover {
+  color: rgb(0, 0, 0);
+}
+
+.retweet:hover {
+  color: rgb(253, 0, 232);
+}
+
+.edit-tweet-box-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.edit-tweet-box-container {
+  position: relative;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.close-edit-tweet {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.close-edit-tweet:hover {
+  color: red;
+}

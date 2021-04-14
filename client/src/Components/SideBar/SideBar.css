@@ -1,0 +1,33 @@
+.side-bar-container {
+  flex: 0.2;
+  border: 2px solid rgb(116, 110, 110);
+}
+
+.side-bar-home-icon {
+  margin-bottom: 1.5em;
+  margin-left: 2.5em;
+  cursor: pointer;
+  margin-top: 7px;
+}
+
+.side-bar-twitter-icon {
+  color: rgb(0, 162, 255);
+}
+
+.side-bar {
+  margin-left: 0.5em;
+}
+
+.sign-out {
+  display: flex;
+  padding: 0 2em;
+}
+
+.sign-out-button {
+  border-radius: 999px;
+  background-color: rgb(0, 162, 255);
+  padding: 0.5em 2em;
+  color: white;
+  font-weight: bolder;
+  cursor: pointer;
+}

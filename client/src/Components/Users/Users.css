@@ -1,0 +1,25 @@
+.users-container {
+  flex: 0.3;
+  padding-top: 9px;
+  border: 2px solid rgb(116, 110, 110);
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.users-container h1 {
+  margin-left: 0.5em;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-avatar {
+  margin-right: 10px;
+}
+
+.some-user {
+  display: flex;
+  align-items: center;
+}

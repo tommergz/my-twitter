@@ -1,0 +1,56 @@
+.tweet-box-container {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 5px solid grey;
+}
+
+.tweet-box-title {
+  margin-top: 9px;
+  border-bottom: 2px solid beige;
+}
+
+.tweet-box {
+  display: flex;
+  align-items: center;
+  margin-top: 1em;
+}
+
+.file {
+  display: flex;
+  align-items: center;
+}
+
+.tweet-box > input {
+  border: none;
+  font-size: 1.2em;
+  margin-right: 0.5em;
+  padding-left: 0.5em;
+}
+
+.tweet-box > input:focus {
+  border: none;
+}
+
+.tweet-file-upload {
+  margin-top: 1em;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1em;
+}
+
+.tweet-box-title, .tweet-box, .tweet-file-upload {
+  padding-left: 0.5em;
+}
+
+.tweet-button {
+  padding-right: 0.5em;
+}
+
+.tweet-button > button {
+  border-radius: 999px;
+  background-color: rgb(0, 162, 255);
+  padding: 0.5em 2em;
+  color: white;
+  font-weight: bolder;
+  cursor: pointer;
+}
