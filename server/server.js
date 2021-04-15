@@ -23,8 +23,9 @@ mongoose.connect(mongoURI, mongoConnectionEssentials, (err) => {
 })
 
 app.use(require("./Routes/Auth/UserAuth"))
-app.use(require("./Routes/Tweets/Tweets"))
 app.use(require("./Routes/Users/Users"))
+app.use(require("./Routes/Tweets/Tweets"))
+app.use(require("./Routes/Comments/Comments"))
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {

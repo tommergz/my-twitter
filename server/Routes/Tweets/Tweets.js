@@ -61,7 +61,7 @@ router.put('/tweet-update', async (request, response) => {
       await tweetModel.findById(tweetId, async (err, updatedTweet) => {
         updatedTweet.tweet = tweet
         await updatedTweet.save()
-        return response.status(200).json({msg: 'Tweet has updted'})
+        return response.status(200).json({msg: 'Tweet has updated'})
       })
     } else if (!file && !fileId) {
       await cloudinary.uploader.destroy(currentTweet.file_id, async (error, res) => {
@@ -73,7 +73,7 @@ router.put('/tweet-update', async (request, response) => {
           updatedTweet.file = null
           updatedTweet.file_id = null
           await updatedTweet.save()
-          return response.status(200).json({msg: 'Tweet has updted'})
+          return response.status(200).json({msg: 'Tweet has updated'})
         })
       })
     } else if (file && !fileId) {
@@ -88,7 +88,7 @@ router.put('/tweet-update', async (request, response) => {
           updatedTweet.file = file_url
           updatedTweet.file_id = cloudinary_id
           await updatedTweet.save()
-          return response.status(200).json({msg: 'Tweet has updted'})
+          return response.status(200).json({msg: 'Tweet has updated'})
         })
       })
     }
@@ -96,20 +96,20 @@ router.put('/tweet-update', async (request, response) => {
 })
 
 router.delete('/tweet-remove', async (request, response) => {
-    const {id, file}  = request.query
+  const {id, file}  = request.query
 
-    if (!file) {
+  if (!file) {
+    await tweetModel.findByIdAndRemove(id).exec()
+    return response.status(200).json({msg: 'Tweet has deleted'})
+  } else {
+    cloudinary.uploader.destroy(file, async (error, res) => {
+      if (error) {
+        console.log(error);
+      }
       await tweetModel.findByIdAndRemove(id).exec()
       return response.status(200).json({msg: 'Tweet has deleted'})
-    } else {
-      cloudinary.uploader.destroy(file, async (error, res) => {
-        if (error) {
-          console.log(error);
-        }
-        await tweetModel.findByIdAndRemove(id).exec()
-        return response.status(200).json({msg: 'Tweet has deleted'})
-      })
-    }
+    })
+  }
 })
 
 router.get("/tweets", async (request, response) => {
@@ -122,27 +122,6 @@ router.get("/tweets", async (request, response) => {
     .catch((error) => {
       console.log(error);
     })
-})
-
-router.post("/comments/:id", async (request, response) => {
-  const tweet_id = request.params.id
-  const tweet = await tweetModel.findOne({ _id: tweet_id })
-
-  const form = new Formidable.IncomingForm()
-  form.parse(request, async (error, fields, files) => {
-    const { comment } = fields
-    tweet.comments = [...tweet.comments, comment]
-
-    const updateDocument = await tweetModel.findOneAndUpdate(
-      { _id: tweet_id },
-      tweet,
-      {
-        new: true
-      }
-    )
-  })
-
-  return response.status(201).json({ msg: "Liked tweet" })
 })
 
 module.exports = router

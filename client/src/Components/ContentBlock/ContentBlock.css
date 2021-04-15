@@ -33,7 +33,7 @@
 
 .user-tag {
   color: rgb(61, 61, 61);
-  margin-left: 0.8em;
+  margin-left: 0.5em;
 }
 
 .tweet > img {
@@ -59,6 +59,7 @@
 
 .remove-tweet, .edit-tweet {
   cursor: pointer;
+  font-size: 28px !important;
 }
 
 .remove-tweet:hover {
@@ -97,7 +98,7 @@
   color: rgb(253, 0, 232);
 }
 
-.edit-tweet-box-wrapper {
+.edit-tweet-box-wrapper, .comments-box-wrapper, .edit-comment-box-wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -110,11 +111,25 @@
   z-index: 1;
 }
 
-.edit-tweet-box-container {
+.edit-tweet-box-container, .comments-box-container, .edit-comment-box-container {
   position: relative;
   background-color: white;
   padding: 20px;
   border-radius: 10px;
+}
+
+.edit-comment-box-container {
+  z-index: 2;
+}
+
+.comments-box-container {
+  width: 80%;
+  height: 80%;
+  overflow-y: scroll;
+}
+
+.comment-img {
+  max-width: 50% !important;
 }
 
 .close-edit-tweet {
@@ -122,6 +137,7 @@
   right: 10px;
   top: 10px;
   cursor: pointer;
+  font-size: 28px !important;
 }
 
 .close-edit-tweet:hover {
