@@ -9,7 +9,7 @@ const TweetBox = ({setTweets}) => {
   const [file, setFile] = useState('')
 
   const Tweet = (e) => {
-    const url = "http://localhost:5000/tweet-upload"
+    const url = "https://tommern.herokuapp.com/tweet-upload"
     const token = localStorage.getItem("sid")
 
     const data = new FormData()
@@ -23,7 +23,7 @@ const TweetBox = ({setTweets}) => {
         },
       })
       .then(async (response) => {
-        const url = 'http://localhost:5000/tweets'
+        const url = 'https://tommern.herokuapp.com/tweets'
         const {data} = await axios.get(url)
         setTweets(data)
         setTweet("")

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Redirect } from "react-router"
 import "../../StyleSheet/Form.css"
 import axios from 'axios'
+import {Link} from 'react-router-dom'
 
 export default class SignIn extends Component {
 
@@ -24,7 +25,7 @@ export default class SignIn extends Component {
     data.append('username', this.state.username)
     data.append('password', this.state.password)
 
-    const url = "http://localhost:5000/user-login"
+    const url = "https://tommern.herokuapp.com/user-login"
     axios
       .post(url, data)
       .then((response) => {
@@ -43,26 +44,34 @@ export default class SignIn extends Component {
     const redirect = this.state.redirect
     return (
       redirect ? 
-        <Redirect to="/home" /> : 
-        <div className="form-container">
-        <form className="form">
-          <label>Username</label>
-          <input 
-            onChange={this.handleForm} 
-            type="text" 
-            placeholder="Username" 
-            id="username" 
-          />
-          <label>Password</label>
-          <input 
-            onChange={this.handleForm} 
-            type="password" 
-            name="" 
-            id="password"
-          />
-          <button onClick={this.signIn}>Log in</button>
-        </form>
-      </div>
+        <Redirect to="/" /> : 
+        <div className="form-container-wrapper">
+          <div className="form-container">
+            <form className="form">
+              <label>Username</label>
+              <input 
+                onChange={this.handleForm} 
+                type="text" 
+                placeholder="Username" 
+                id="username" 
+              />
+              <label>Password</label>
+              <input 
+                onChange={this.handleForm} 
+                type="password" 
+                name="" 
+                id="password"
+              />
+              <button onClick={this.signIn}>Log in</button>
+            </form>
+              <span className="or">Or</span>
+                <Link to="/user-signup">
+                  <button className="sign-up-button">
+                    Sign up
+                  </button>
+              </Link>
+          </div>
+        </div>
     )
   }
 }

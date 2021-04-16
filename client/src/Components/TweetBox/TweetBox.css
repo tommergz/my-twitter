@@ -25,6 +25,7 @@
   font-size: 1.2em;
   margin-right: 0.5em;
   padding-left: 0.5em;
+  width: 87%;
 }
 
 .tweet-box > input:focus {

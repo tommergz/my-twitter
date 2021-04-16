@@ -9,9 +9,8 @@ const Users = () => {
 
   useEffect(() => {
     const loadData = async function() {
-      const url = 'http://localhost:5000/users'
+      const url = 'https://tommern.herokuapp.com/users'
       const {data} = await axios.get(url)
-  
       setUsers(data)
     }
 

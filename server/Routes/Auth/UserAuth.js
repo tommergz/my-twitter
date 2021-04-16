@@ -15,9 +15,9 @@ cloudinary.config({
 router.post('/user-register', (request, response) => {
   const form = new Formidable.IncomingForm()
   form.parse(request, async (error, fields, files) => {
-    const {username, password, verifiedPassword} = fields
+    const {username, mail, password, verifiedPassword} = fields
     const {profileImage} = files
-    if (!username || !password || !verifiedPassword || !profileImage) {
+    if (!username || !password || !verifiedPassword) {
       return response
         .status(400)
         .json({msg:'All fields have to be entered'})
@@ -41,6 +41,7 @@ router.post('/user-register', (request, response) => {
           const hasehedPassword = await Bcrypt.hash(password, salt)
           const newUser = new userModel({
             username,
+            mail,
             password: hasehedPassword,
             profile_pic: profileIamge_url
           })

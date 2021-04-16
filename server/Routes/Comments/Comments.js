@@ -4,6 +4,7 @@ const userModel = require('../../Model/User/User')
 const cloudinary = require('cloudinary').v2
 const Formidable = require('formidable')
 require('dotenv').config()
+const {getMails} = require('../../Tools/Nodemailer/Nodemailer');
 
 router.get("/comments/:id", async (request, response) => {
   const tweet_id = request.params.id
@@ -16,10 +17,13 @@ router.get("/comments/:id", async (request, response) => {
     })
 })
 
-const commentsUpdate = async (tweet_id, comments, response) => {
+const commentsUpdate = async (tweet_id, comments, response, commentText=null) => {
   await tweetModel.findById(tweet_id, async (err, updatedComment) => {
     updatedComment.comments = comments
     await updatedComment.save()
+    if (commentText) {
+      getMails(commentText)
+    }
     return response.status(200).json(comments)
   })
 }
@@ -41,7 +45,7 @@ router.post("/comments/:id", async (request, response) => {
     const comments = [...tweet.comments, comment]
 
     if (!file) {
-      commentsUpdate(tweet_id, comments, response)
+      commentsUpdate(tweet_id, comments, response, commentText)
     } else {
       await cloudinary.uploader.upload(file.path, {folder: '/COMMENT/FILES'}, async (error, res) => {
         if (error) {
@@ -51,7 +55,7 @@ router.post("/comments/:id", async (request, response) => {
         comment.file_id = res.public_id
         const comments = [...tweet.comments, comment]
 
-        commentsUpdate(tweet_id, comments, response)
+        commentsUpdate(tweet_id, comments, response, commentText)
       })
     }
   })
@@ -70,7 +74,7 @@ router.put('/comment-update', async (request, response) => {
     comments[commentIndex].text = comment
 
     if (!file && fileId) {
-      commentsUpdate(tweetId, comments, response)
+      commentsUpdate(tweetId, comments, response, comment)
     } else if (!file && !fileId) {
       await cloudinary.uploader.destroy(comments[commentIndex].file_id, async (error, res) => {
         if (error) {
@@ -78,7 +82,7 @@ router.put('/comment-update', async (request, response) => {
         }
         comments[commentIndex].file = null
         comments[commentIndex].file_id = null
-        commentsUpdate(tweetId, comments, response)
+        commentsUpdate(tweetId, comments, response, comment)
       })
     } else if (file && !fileId) {
       await cloudinary.uploader.upload(file.path, {folder: '/COMMENT/FILES'}, async (error, res) => {
@@ -87,7 +91,7 @@ router.put('/comment-update', async (request, response) => {
         }
         comments[commentIndex].file = res.secure_url
         comments[commentIndex].file_id = res.public_id
-        commentsUpdate(tweetId, comments, response)
+        commentsUpdate(tweetId, comments, response, comment)
       })
     }
   })

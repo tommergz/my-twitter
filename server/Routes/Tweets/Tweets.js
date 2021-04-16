@@ -5,6 +5,7 @@ const cloudinary = require('cloudinary').v2
 const JWT = require('jsonwebtoken')
 const Formidable = require('formidable')
 require('dotenv').config()
+const {getMails} = require('../../Tools/Nodemailer/Nodemailer');
 
 router.post('/tweet-upload', async (request, response) => {
   const token = request.header('x-auth-token')
@@ -44,6 +45,7 @@ router.post('/tweet-upload', async (request, response) => {
         await newTweet.save()
       })
     }
+    getMails(tweet)
     return response.status(200).json({msg: 'TWEET HAS SENT!'})
   })
 })
@@ -61,6 +63,7 @@ router.put('/tweet-update', async (request, response) => {
       await tweetModel.findById(tweetId, async (err, updatedTweet) => {
         updatedTweet.tweet = tweet
         await updatedTweet.save()
+        getMails(tweet)
         return response.status(200).json({msg: 'Tweet has updated'})
       })
     } else if (!file && !fileId) {
@@ -73,6 +76,7 @@ router.put('/tweet-update', async (request, response) => {
           updatedTweet.file = null
           updatedTweet.file_id = null
           await updatedTweet.save()
+          getMails(tweet)
           return response.status(200).json({msg: 'Tweet has updated'})
         })
       })
@@ -88,6 +92,7 @@ router.put('/tweet-update', async (request, response) => {
           updatedTweet.file = file_url
           updatedTweet.file_id = cloudinary_id
           await updatedTweet.save()
+          getMails(tweet)
           return response.status(200).json({msg: 'Tweet has updated'})
         })
       })

@@ -37,7 +37,7 @@ const ContentBlock = () => {
   }
 
   const loadData = async function() {
-    const url = 'http://localhost:5000/tweets'
+    const url = 'https://tommern.herokuapp.com/tweets'
     const {data} = await axios.get(url)
     setTweets(data)
   }
@@ -47,7 +47,7 @@ const ContentBlock = () => {
   }, [])
 
   const removeTweet = (id, file) => {
-    const url = `http://localhost:5000/tweet-remove`
+    const url = `https://tommern.herokuapp.com/tweet-remove`
   
     axios
       .delete(url, {params: {
@@ -55,7 +55,7 @@ const ContentBlock = () => {
         file: file
       }})
       .then(async (response) => {
-        const url = 'http://localhost:5000/tweets'
+        const url = 'https://tommern.herokuapp.com/tweets'
         const {data} = await axios.get(url)
         setTweets(data)
       })
@@ -157,7 +157,7 @@ const EditTweet = ({tweetInfo, setTweetInfo, setTweets}) => {
   const [file, setFile] = useState(fileId)
 
   const save = async (e) => {
-    const url = "http://localhost:5000/tweet-update"
+    const url = "https://tommern.herokuapp.com/tweet-update"
 
     const data = new FormData()
     data.append("tweet", tweet)
@@ -175,7 +175,7 @@ const EditTweet = ({tweetInfo, setTweetInfo, setTweets}) => {
     axios
       .put(url, data)
       .then(async (response) => {
-        const url = 'http://localhost:5000/tweets'
+        const url = 'https://tommern.herokuapp.com/tweets'
         const {data} = await axios.get(url)
         setTweets(data)
       })
@@ -250,7 +250,7 @@ const Comment = ({id, currentUser, setCommentInfo, loadData}) => {
 
   useEffect(() => {
     const loadData = async function() {
-      const url = `http://localhost:5000/comments/${id}`    
+      const url = `https://tommern.herokuapp.com/comments/${id}`    
 
       axios
         .get(url)
@@ -266,7 +266,7 @@ const Comment = ({id, currentUser, setCommentInfo, loadData}) => {
   }, [id])
 
   const addComment = () => {
-    const url = `http://localhost:5000/comments/${id}`
+    const url = `https://tommern.herokuapp.com/comments/${id}`
 
     const data = new FormData()
     data.append('currentUser', currentUser)
@@ -284,7 +284,7 @@ const Comment = ({id, currentUser, setCommentInfo, loadData}) => {
   }
 
   const removeComment = (commentId) => {
-    const url = `http://localhost:5000/comment-remove`
+    const url = `https://tommern.herokuapp.com/comment-remove`
   
     axios
       .delete(url, {params: {
@@ -397,7 +397,7 @@ const EditComment = ({id, editCommentInfo, setComments, setEditCommentInfo}) => 
   const [file, setFile] = useState(fileId)
 
   const save = async (e) => {
-    const url = "http://localhost:5000/comment-update"
+    const url = "https://tommern.herokuapp.com/comment-update"
 
     const data = new FormData()
     data.append("tweetId", id)
@@ -416,7 +416,7 @@ const EditComment = ({id, editCommentInfo, setComments, setEditCommentInfo}) => 
     axios
       .put(url, data)
       .then(async (response) => {
-        const url = `http://localhost:5000/comments/${id}`
+        const url = `https://tommern.herokuapp.com/comments/${id}`
         const {data} = await axios.get(url)
         setComments(data.comments)
       })
