@@ -10,11 +10,18 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import io from 'socket.io-client'
+
+const socket = io.connect('https://tommern.herokuapp.com')
 
 const ContentBlock = () => {
 
   const currentUser = localStorage.getItem("username")
   const [tweets, setTweets] = useState([])
+  const [selectedTweetsObj, setSelectedTweets] = useState({
+    search: false,
+    tweets: []
+  })
   const [tweetInfo, setTweetInfo] = useState({
     tweet: '',
     tweetId: '',
@@ -42,7 +49,11 @@ const ContentBlock = () => {
     setTweets(data)
   }
 
-  useEffect(() => {
+  socket.on('tweets', (tweets) => {
+    setTweets(tweets)
+  })
+
+  useEffect(() => { 
     loadData()
   }, [])
 
@@ -57,7 +68,8 @@ const ContentBlock = () => {
       .then(async (response) => {
         const url = 'https://tommern.herokuapp.com/tweets'
         const {data} = await axios.get(url)
-        setTweets(data)
+        // setTweets(data)
+        socket.emit('tweets', data)
       })
       .catch((error) => {
         console.log(error);
@@ -71,6 +83,24 @@ const ContentBlock = () => {
     })
   }
 
+  const searchTweets = (value) => {
+    if (value) {
+      let allTweets = [...tweets]
+      let choosenTweets = allTweets.filter(tweet => tweet.tweet.toLowerCase().indexOf(value.toLowerCase()) > -1)
+      setSelectedTweets({
+        search: true,
+        selectedTweets: choosenTweets
+      })
+    } else {
+      setSelectedTweets({
+        search: false,
+        selectedTweets: []
+      })
+    }    
+  }
+  const {search, selectedTweets} = selectedTweetsObj
+  const currentTweets = search ? selectedTweets : tweets
+  currentTweets.sort((prev, next) => next.date - prev.date)
   return (
     <div className="content-container">
       <TweetBox 
@@ -95,10 +125,18 @@ const ContentBlock = () => {
           /> :
           null
       }
+      <div className="search-block">
+        <input 
+          type="text" 
+          placeholder="SEARCH" 
+          className="search-input"
+          onChange={(e) => searchTweets(e.target.value)}
+        />
+      </div>
       <div className="content-wrapper">
-        {tweets && (
+        {currentTweets && (
             <div className="tweet-content">
-              {tweets.reverse().map((tweet, index) => {
+              {currentTweets.map((tweet, index) => {
                 return (
                   <div key={+Date.now().toString() + index} className="content">
                     <div className="user-profile">
@@ -177,7 +215,8 @@ const EditTweet = ({tweetInfo, setTweetInfo, setTweets}) => {
       .then(async (response) => {
         const url = 'https://tommern.herokuapp.com/tweets'
         const {data} = await axios.get(url)
-        setTweets(data)
+        // setTweets(data)
+        socket.emit('tweets', data)
       })
       .catch((error) => {
         console.log(error);
@@ -248,6 +287,10 @@ const Comment = ({id, currentUser, setCommentInfo, loadData}) => {
     editCommentBlock: false
   })
 
+  socket.on('comments', (comments) => {
+    setComments(comments)
+  })
+
   useEffect(() => {
     const loadData = async function() {
       const url = `https://tommern.herokuapp.com/comments/${id}`    
@@ -265,6 +308,16 @@ const Comment = ({id, currentUser, setCommentInfo, loadData}) => {
     loadData()
   }, [id])
 
+  const updateTweets = async function() {
+    const url = 'https://tommern.herokuapp.com/tweets'
+    const {data} = await axios.get(url)
+    socket.emit('tweets', data)
+  }
+
+  useEffect(() => {
+    updateTweets()    
+  }, [comments])
+
   const addComment = () => {
     const url = `https://tommern.herokuapp.com/comments/${id}`
 
@@ -276,7 +329,8 @@ const Comment = ({id, currentUser, setCommentInfo, loadData}) => {
     axios
       .post(url, data)
       .then((res) => {
-        setComments(res.data)
+        // setComments(res.data)
+        socket.emit('comments', res.data)
       })
       .catch((error) => {
         console.log(error);
@@ -292,7 +346,8 @@ const Comment = ({id, currentUser, setCommentInfo, loadData}) => {
         commentId: commentId
       }})
       .then(async (response) => {
-        setComments(response.data)
+        // setComments(response.data)
+        socket.emit('comments', response.data)
       })
       .catch((error) => {
         console.log(error);
@@ -418,7 +473,8 @@ const EditComment = ({id, editCommentInfo, setComments, setEditCommentInfo}) => 
       .then(async (response) => {
         const url = `https://tommern.herokuapp.com/comments/${id}`
         const {data} = await axios.get(url)
-        setComments(data.comments)
+        // setComments(data.comments)
+        socket.emit('comments', data.comments)
       })
       .catch((error) => {
         console.log(error);

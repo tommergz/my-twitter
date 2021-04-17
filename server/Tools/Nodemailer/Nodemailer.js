@@ -10,7 +10,6 @@ const mailEmmiter = new MailEmitter();
 const nodemailer = require("nodemailer");
 
 async function mail(applicants, message, subject) {
-  // let testAccount = await nodemailer.createTestAccount();
   const chosenApplicants = applicants.join(', ');
   let transporter = nodemailer.createTransport({
     host: 'smtp.mail.ru',

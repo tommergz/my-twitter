@@ -2,12 +2,19 @@ import React, { useState } from 'react'
 import Avatar from '@material-ui/core/Avatar'
 import './TweetBox.css'
 import axios from "axios"
+import io from 'socket.io-client'
+
+const socket = io.connect('https://tommern.herokuapp.com')
 
 const TweetBox = ({setTweets}) => {
   const profile_image = localStorage.getItem("profile-image") || ''
   const [tweet, setTweet] = useState('')
   const [file, setFile] = useState('')
 
+  socket.on('tweets', (tweets) => {
+    setTweets(tweets)
+  })
+  
   const Tweet = (e) => {
     const url = "https://tommern.herokuapp.com/tweet-upload"
     const token = localStorage.getItem("sid")
@@ -25,7 +32,8 @@ const TweetBox = ({setTweets}) => {
       .then(async (response) => {
         const url = 'https://tommern.herokuapp.com/tweets'
         const {data} = await axios.get(url)
-        setTweets(data)
+        // setTweets(data)
+        socket.emit('tweets', data)
         setTweet("")
         setFile("")
       })

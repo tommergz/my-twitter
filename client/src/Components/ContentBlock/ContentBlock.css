@@ -5,6 +5,21 @@
   overflow-x: hidden;
 }
 
+.search-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-bottom: 5px solid grey;
+}
+
+.search-input {
+  height: 25px;
+  font-size: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
 .content {
   display: flex;
   position: relative;

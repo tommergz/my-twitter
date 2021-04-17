@@ -21,7 +21,8 @@ router.post('/tweet-upload', async (request, response) => {
       const newTweet = new tweetModel({
         user: user.username,
         tweet: tweet,
-        profile: user.profile_pic
+        profile: user.profile_pic,
+        date: +Date.now()
       })
 
       await newTweet.save()
@@ -33,13 +34,13 @@ router.post('/tweet-upload', async (request, response) => {
         }
         const file_url = res.secure_url
         const cloudinary_id = res.public_id
-
         const newTweet = new tweetModel({
           user: user.username,
           tweet: tweet,
           profile: user.profile_pic,
           file: file_url,
-          file_id: cloudinary_id
+          file_id: cloudinary_id,
+          date: +Date.now()
         })
 
         await newTweet.save()

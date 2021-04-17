@@ -2,6 +2,14 @@ const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
 const app = express()
+const http = require('http').createServer(app)
+const io = require('socket.io')(http, {
+  cors: {
+    origin: "https://tommern.netlify.app",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+})
 require("dotenv").config()
 
 app.use(cors())
@@ -27,7 +35,17 @@ app.use(require("./Routes/Users/Users"))
 app.use(require("./Routes/Tweets/Tweets"))
 app.use(require("./Routes/Comments/Comments"))
 
+io.on('connection', socket => {
+  socket.on('tweets', (tweets) => {
+    io.emit('tweets', tweets)
+  })
+  socket.on('comments', (comments) => {
+    io.emit('comments', comments)
+  })
+})
+
 const PORT = process.env.PORT || 5000
-app.listen(PORT, () => {
+
+http.listen(PORT, () => {
   console.log(`Server started at PORT ${PORT}`);
 })

@@ -46,7 +46,7 @@ router.post('/user-register', (request, response) => {
             profile_pic: profileIamge_url
           })
           const savedUser = await newUser.save()
-  
+
           const token = JWT.sign({ id: savedUser._id }, process.env.jwt_secret)
         
           return response

@@ -23,3 +23,7 @@
   display: flex;
   align-items: center;
 }
+
+.some-user > h3 {
+  font-size: 22px;
+}
