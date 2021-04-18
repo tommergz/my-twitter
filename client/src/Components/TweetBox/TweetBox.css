@@ -20,6 +20,19 @@
   align-items: center;
 }
 
+.upload-image {
+  cursor: pointer;
+  font-size: 35px !important;
+}
+
+.upload-image:hover {
+  color: rgb(0, 162, 255);
+}
+
+.image-name {
+  margin-left: 10px;
+}
+
 .tweet-box > input {
   border: none;
   font-size: 1.2em;

@@ -5,14 +5,13 @@ import axios from 'axios'
 import Avatar from '@material-ui/core/Avatar';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import MessageIcon from '@material-ui/icons/Message';
-import ReplayIcon from '@material-ui/icons/Replay';
-import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import io from 'socket.io-client'
+import EditTweet from '../EditTweet/EditTweet'
+import Comment from '../Comment/Comment'
 
-const socket = io.connect('https://tommern.herokuapp.com')
+const socket = io.connect('http://localhost:5000')
 
 const ContentBlock = () => {
 
@@ -44,7 +43,7 @@ const ContentBlock = () => {
   }
 
   const loadData = async function() {
-    const url = 'https://tommern.herokuapp.com/tweets'
+    const url = 'http://localhost:5000/tweets'
     const {data} = await axios.get(url)
     setTweets(data)
   }
@@ -58,7 +57,7 @@ const ContentBlock = () => {
   }, [])
 
   const removeTweet = (id, file) => {
-    const url = `https://tommern.herokuapp.com/tweet-remove`
+    const url = `http://localhost:5000/tweet-remove`
   
     axios
       .delete(url, {params: {
@@ -66,9 +65,8 @@ const ContentBlock = () => {
         file: file
       }})
       .then(async (response) => {
-        const url = 'https://tommern.herokuapp.com/tweets'
+        const url = 'http://localhost:5000/tweets'
         const {data} = await axios.get(url)
-        // setTweets(data)
         socket.emit('tweets', data)
       })
       .catch((error) => {
@@ -98,17 +96,41 @@ const ContentBlock = () => {
       })
     }    
   }
+
+  const like = (currentUser, tweetId) => {
+
+    const url = "http://localhost:5000/tweet-like"
+
+    const data = {
+      currentUser,
+      tweetId
+    }
+
+    axios
+    .put(url, data)
+    .then(async (response) => {
+      const url = 'http://localhost:5000/tweets'
+      const {data} = await axios.get(url)
+      socket.emit('tweets', data)
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
+
   const {search, selectedTweets} = selectedTweetsObj
   const currentTweets = search ? selectedTweets : tweets
   currentTweets.sort((prev, next) => next.date - prev.date)
   return (
     <div className="content-container">
       <TweetBox 
+        socket={socket}
         setTweets={setTweets}
       />
       {
         tweetInfo.editTweetBlock ? 
           <EditTweet 
+            socket={socket}
             tweetInfo={tweetInfo}
             setTweetInfo={setTweetInfo}
             setTweets={setTweets}
@@ -118,6 +140,7 @@ const ContentBlock = () => {
       {
         commentInfo.commentBlock ? 
           <Comment 
+            socket={socket}
             id={commentInfo.id} 
             currentUser={currentUser} 
             setCommentInfo={setCommentInfo}
@@ -137,6 +160,8 @@ const ContentBlock = () => {
         {currentTweets && (
             <div className="tweet-content">
               {currentTweets.map((tweet, index) => {
+                const likeIndex = tweet.likes.indexOf(currentUser)
+                const liked = likeIndex < 0 ? '' : 'liked'
                 return (
                   <div key={+Date.now().toString() + index} className="content">
                     <div className="user-profile">
@@ -155,12 +180,10 @@ const ContentBlock = () => {
                           <MessageIcon />
                           <h5>{tweet.comments.length}</h5>
                         </div>
-                        <ReplayIcon className="retweet" />
-                        <div className="likes">
+                        <div className={"likes " + liked} onClick={() => like(currentUser, tweet._id)}>
                           <FavoriteIcon />
-                          <h5>{tweet.likes}</h5>
+                          <h5>{tweet.likes.length}</h5>
                         </div>
-                        <GetAppIcon className="download" />
                       </div>
                       {
                         tweet.user === currentUser ? 
@@ -183,349 +206,6 @@ const ContentBlock = () => {
             </div>
           )  
         }
-      </div>
-    </div>
-  )
-}
-
-const EditTweet = ({tweetInfo, setTweetInfo, setTweets}) => {
-  const {tweetId, fileId} = tweetInfo
-  const profile_image = localStorage.getItem("profile-image") || ''
-  const [tweet, setTweet] = useState(tweetInfo.tweet)
-  const [file, setFile] = useState(fileId)
-
-  const save = async (e) => {
-    const url = "https://tommern.herokuapp.com/tweet-update"
-
-    const data = new FormData()
-    data.append("tweet", tweet)
-    data.append("tweetId", tweetId)
-    data.append("file", file)
-    data.append("fileId", file)
-
-    setTweetInfo({
-      tweet: '',
-      tweetId: '',
-      fileId: '',
-      editTweetBlock: false
-    })
-
-    axios
-      .put(url, data)
-      .then(async (response) => {
-        const url = 'https://tommern.herokuapp.com/tweets'
-        const {data} = await axios.get(url)
-        // setTweets(data)
-        socket.emit('tweets', data)
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-  }
-  return (
-    <div className="edit-tweet-box-wrapper">
-      <div className="edit-tweet-box-container">
-        <div className="tweet-box">
-          <Avatar alt="Avatar" src={profile_image} />
-          <input 
-            type="text" 
-            placeholder="What's happening?" 
-            onChange={(e) => setTweet(e.target.value)}
-            value={tweet}
-          />
-        </div>
-        <div className="tweet-file-upload">
-          <div className="file">
-            {
-              file ? 
-                <button onClick={() => setFile('')}>
-                  Change file
-                </button> :
-                <input 
-                  type="file"
-                  onChange={
-                    (e) => setFile(e.target.files[0])
-                  }
-                />             
-            }
-          </div>
-          <div className="tweet-button">
-            <button disabled={tweet === ''} onClick={save}>
-              SAVE
-            </button>
-          </div>
-        </div>
-        <HighlightOffIcon 
-          className="close-edit-tweet icon" 
-          onClick={
-            () => {
-              setTweetInfo({
-                tweet: '',
-                tweetId: '',
-                fileId: '',
-                publicId: '',
-                editTweetBlock: false
-              })
-            }
-          }
-        />
-      </div>
-    </div>
-  )
-}
-
-const Comment = ({id, currentUser, setCommentInfo, loadData}) => {
-  const profile_image = localStorage.getItem("profile-image") || ''
-  const [commentText, setComment] = useState('')
-  const [comments, setComments] = useState([])
-  const [file, setFile] = useState('')
-
-  const [editCommentInfo, setEditCommentInfo] = useState({
-    commentText: '',
-    fileId: '',
-    commentId: '',
-    editCommentBlock: false
-  })
-
-  socket.on('comments', (comments) => {
-    setComments(comments)
-  })
-
-  useEffect(() => {
-    const loadData = async function() {
-      const url = `https://tommern.herokuapp.com/comments/${id}`    
-
-      axios
-        .get(url)
-        .then((res) => {
-          setComments(res.data.comments)
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-    }
-
-    loadData()
-  }, [id])
-
-  const updateTweets = async function() {
-    const url = 'https://tommern.herokuapp.com/tweets'
-    const {data} = await axios.get(url)
-    socket.emit('tweets', data)
-  }
-
-  useEffect(() => {
-    updateTweets()    
-  }, [comments])
-
-  const addComment = () => {
-    const url = `https://tommern.herokuapp.com/comments/${id}`
-
-    const data = new FormData()
-    data.append('currentUser', currentUser)
-    data.append('commentText', commentText)
-    data.append('file', file)
-
-    axios
-      .post(url, data)
-      .then((res) => {
-        // setComments(res.data)
-        socket.emit('comments', res.data)
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-  }
-
-  const removeComment = (commentId) => {
-    const url = `https://tommern.herokuapp.com/comment-remove`
-  
-    axios
-      .delete(url, {params: {
-        tweetId: id,
-        commentId: commentId
-      }})
-      .then(async (response) => {
-        // setComments(response.data)
-        socket.emit('comments', response.data)
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-  }
-
-  return(
-    <div className="comments-box-wrapper">
-      {
-        editCommentInfo.editCommentBlock ? 
-          <EditComment 
-            id={id} 
-            editCommentInfo={editCommentInfo} 
-            setComments={setComments} 
-            setEditCommentInfo={setEditCommentInfo}
-          /> :
-          null
-      }
-      <div className="comments-box-container">
-        <div className="tweet-box">
-          <Avatar alt="Avatar" src={profile_image} />
-          <input 
-            type="text" 
-            placeholder="Your comment" 
-            onChange={(e) => setComment(e.target.value)}
-            value={commentText}
-          />
-        </div>
-        <div className="tweet-file-upload">
-          <div className="file">
-            <input 
-              type="file" 
-              onChange={(e) => setFile(e.target.files[0])}
-            />
-          </div>
-          <div className="tweet-button">
-            <button disabled={commentText === ''} onClick={addComment}>
-              Comment
-            </button>
-          </div>
-        </div>
-        <HighlightOffIcon 
-            className="close-edit-tweet icon" 
-            onClick={
-              () => {
-                setCommentInfo({
-                  id: '',
-                  commentBlock: false
-                })
-                loadData()
-              }
-            }
-          />
-        <div className="tweet-content">
-          {comments.map(({id, profile, user, text, file}, index) => {
-            return (
-              <div key={+Date.now().toString() + index} className="content">
-                <div className="user-profile">
-                  <Avatar alt="User Profile" src={profile} />
-                </div>
-                <div className="tweet">
-                  <div className="user">
-                    <h3 className="user-name">{user}</h3>
-                    <h3 className="user-tag">{`@${user}`}</h3>
-                  </div>
-                  <h4>{text}</h4>       
-                  {file ? <img src={file} className="comment-img" alt="File" /> : null}
-                  {
-                    user === currentUser ? 
-                      <div className="tweet-settings">
-                        <DeleteForeverIcon 
-                          className="remove-tweet" 
-                          onClick={() => removeComment(id)}
-                        />
-                        <EditIcon 
-                          className="edit-tweet" 
-                          onClick={
-                            () => setEditCommentInfo({
-                              commentText: text,
-                              fileId: file,
-                              commentId: id,
-                              editCommentBlock: true
-                            })}
-                        />
-                      </div> : 
-                      ''
-                  }
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-const EditComment = ({id, editCommentInfo, setComments, setEditCommentInfo}) => {
-  const {commentText, fileId, commentId} = editCommentInfo
-  const profile_image = localStorage.getItem("profile-image") || ''
-  const [comment, setComment] = useState(commentText)
-  const [file, setFile] = useState(fileId)
-
-  const save = async (e) => {
-    const url = "https://tommern.herokuapp.com/comment-update"
-
-    const data = new FormData()
-    data.append("tweetId", id)
-    data.append("commentId", commentId)
-    data.append("comment", comment)
-    data.append("fileId", file)
-    data.append("file", file)
-
-    setEditCommentInfo({
-      commentText: '',
-      fileId: '',
-      commentId: '',
-      editCommentBlock: false
-    })
-
-    axios
-      .put(url, data)
-      .then(async (response) => {
-        const url = `https://tommern.herokuapp.com/comments/${id}`
-        const {data} = await axios.get(url)
-        // setComments(data.comments)
-        socket.emit('comments', data.comments)
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-  }
-  return (
-    <div className="edit-comment-box-wrapper">
-      <div className="edit-comment-box-container">
-        <div className="tweet-box">
-          <Avatar alt="Avatar" src={profile_image} />
-          <input 
-            type="text" 
-            placeholder="What's happening?" 
-            onChange={(e) => setComment(e.target.value)}
-            value={comment}
-          />
-        </div>
-        <div className="tweet-file-upload">
-          <div className="file">
-            {
-              file ? 
-                <button onClick={() => setFile('')}>
-                  Change file
-                </button> :
-                <input 
-                  type="file"
-                  onChange={
-                    (e) => setFile(e.target.files[0])
-                  }
-                />             
-            }
-          </div>
-          <div className="tweet-button">
-            <button disabled={comment === ''} onClick={save}>
-              SAVE
-            </button>
-          </div>
-        </div>
-        <HighlightOffIcon 
-          className="close-edit-tweet icon" 
-          onClick={
-            () => {
-              setEditCommentInfo({
-                commentText: '',
-                fileId: '',
-                commentId: '',
-                editCommentBlock: false
-              })
-            }
-          }
-        />
       </div>
     </div>
   )

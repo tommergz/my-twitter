@@ -1,6 +1,12 @@
 .side-bar-container {
-  flex: 0.2;
+  width: 20%;
   border: 2px solid rgb(116, 110, 110);
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.side-bar-container::-webkit-scrollbar {
+  display: none;
 }
 
 .side-bar-home-icon {
@@ -21,6 +27,7 @@
 .sign-out {
   display: flex;
   padding: 0 2em;
+  margin-bottom: 1em;
 }
 
 .sign-out-button {

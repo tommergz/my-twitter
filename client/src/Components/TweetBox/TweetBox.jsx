@@ -1,22 +1,22 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import Avatar from '@material-ui/core/Avatar'
 import './TweetBox.css'
 import axios from "axios"
-import io from 'socket.io-client'
+import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 
-const socket = io.connect('https://tommern.herokuapp.com')
-
-const TweetBox = ({setTweets}) => {
+const TweetBox = ({socket, setTweets}) => {
   const profile_image = localStorage.getItem("profile-image") || ''
   const [tweet, setTweet] = useState('')
   const [file, setFile] = useState('')
 
-  socket.on('tweets', (tweets) => {
-    setTweets(tweets)
-  })
+  const uploadImageButtonRef = useRef(null)
   
+  const uploadImg = () => {
+    uploadImageButtonRef.current.click()
+  }
+
   const Tweet = (e) => {
-    const url = "https://tommern.herokuapp.com/tweet-upload"
+    const url = "http://localhost:5000/tweet-upload"
     const token = localStorage.getItem("sid")
 
     const data = new FormData()
@@ -30,7 +30,7 @@ const TweetBox = ({setTweets}) => {
         },
       })
       .then(async (response) => {
-        const url = 'https://tommern.herokuapp.com/tweets'
+        const url = 'http://localhost:5000/tweets'
         const {data} = await axios.get(url)
         // setTweets(data)
         socket.emit('tweets', data)
@@ -41,10 +41,19 @@ const TweetBox = ({setTweets}) => {
         console.log(error);
       })
   }
+
+  let fileName = ''
+  if (file && file.name.length > 20) {
+    let fullFileName = file.name
+    fileName = fullFileName.slice(0,9) + '...' + fullFileName.slice(-9)
+  } else if (file) {
+    fileName = file.name
+  }
+
   return (
     <div className="tweet-box-container">
       <div className="tweet-box-title">
-        <h1>Home</h1>   
+        <h1>Tweets</h1>   
       </div>
       <div className="tweet-box">
         <Avatar alt="Avatar" src={profile_image} />
@@ -58,9 +67,13 @@ const TweetBox = ({setTweets}) => {
       <div className="tweet-file-upload">
         <div className="file">
           <input 
+            ref={uploadImageButtonRef}
             type="file" 
+            hidden
             onChange={(e) => setFile(e.target.files[0])}
           />
+          <SystemUpdateAltIcon className="upload-image" onClick={uploadImg} />
+          <span className="image-name">{fileName}</span>
         </div>
         <div className="tweet-button">
           <button disabled={tweet === ''} onClick={Tweet}>

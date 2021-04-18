@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { Redirect } from "react-router"
 import "../../StyleSheet/Form.css"
-import Axios from 'axios'
+import axios from 'axios'
+import {Link} from 'react-router-dom'
 
 export default class SignUp extends Component {
     state = {
@@ -29,8 +30,8 @@ export default class SignUp extends Component {
     data.append('verifiedPassword', this.state.vPassword)
     data.append('profileImage', this.state.image)
 
-    const url = "https://tommern.herokuapp.com/user-register";
-    Axios
+    const url = "http://localhost:5000/user-register";
+    axios
       .post(url, data)
       .then((response) => {
         console.log(response);
@@ -78,8 +79,14 @@ export default class SignUp extends Component {
             <input onChange={this.handleForm} type="password" id="vPassword"/>
             <label>Profile Picture</label>
             <input onChange={this.handleForm} type="file" id="image"/>
-            <button onClick={this.signUp}>SignUp</button>
+            <button onClick={this.signUp}>Sign up</button>
           </form>
+          <span className="or">Or</span>
+          <Link to="/user-signin">
+            <button className="sign-up-button">
+              Sign in
+            </button>
+          </Link>
         </div>
       </div>
     )

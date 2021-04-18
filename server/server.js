@@ -5,12 +5,15 @@ const app = express()
 const http = require('http').createServer(app)
 const io = require('socket.io')(http, {
   cors: {
-    origin: "https://tommern.netlify.app",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
     credentials: true
   }
 })
 require("dotenv").config()
+const bodyParser = require('body-parser')
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(cors())
 

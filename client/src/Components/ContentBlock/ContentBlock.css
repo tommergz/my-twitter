@@ -1,8 +1,12 @@
 .content-container {
-  flex: 0.5;
+  width: 55%;
   border: 2px solid rgb(116, 110, 110);
   overflow-y: scroll;
   overflow-x: hidden;
+}
+
+.content-container::-webkit-scrollbar {
+  display: none;
 }
 
 .search-block {
@@ -65,7 +69,7 @@
   display: flex;
   justify-content: space-between;
   margin-top: 1em;
-  width: 80%;
+  width: 32%;
 }
 
 .tweet-settings {
@@ -96,13 +100,17 @@
   cursor: pointer;
 }
 
+.liked {
+  color: red !important;
+}
+
 .download,
 .retweet {
   cursor: pointer;
 }
 
 .likes:hover {
-  color: red;
+  color: rgb(255, 77, 77);
 }
 
 .comments:hover {
@@ -161,4 +169,13 @@
 
 .close-edit-tweet:hover {
   color: red;
+}
+
+.change-file {
+  border-radius: 999px;
+  background-color: rgb(0, 162, 255);
+  padding: 0.5em 2em;
+  color: white;
+  font-weight: bolder;
+  cursor: pointer;
 }

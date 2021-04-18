@@ -118,6 +118,23 @@ router.delete('/tweet-remove', async (request, response) => {
   }
 })
 
+router.put("/tweet-like", async (request, response) => {
+  const {currentUser, tweetId} = request.body
+  const currentTweet = await tweetModel.findById(tweetId)
+  const likes = [...currentTweet.likes]
+  const index = likes.indexOf(currentUser)
+  if (index < 0) {
+    likes.push(currentUser)
+  } else {
+    likes.splice(index, 1)
+  }
+  await tweetModel.findById(tweetId, async (err, updatedTweet) => {
+    updatedTweet.likes = likes
+    await updatedTweet.save()
+    return response.status(200).json({msg: 'Tweet has updated'})
+  })
+})
+
 router.get("/tweets", async (request, response) => {
   await tweetModel
     .find()

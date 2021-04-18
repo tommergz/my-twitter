@@ -25,7 +25,7 @@ export default class SignIn extends Component {
     data.append('username', this.state.username)
     data.append('password', this.state.password)
 
-    const url = "https://tommern.herokuapp.com/user-login"
+    const url = "http://localhost:5000/user-login"
     axios
       .post(url, data)
       .then((response) => {
@@ -65,10 +65,10 @@ export default class SignIn extends Component {
               <button onClick={this.signIn}>Log in</button>
             </form>
               <span className="or">Or</span>
-                <Link to="/user-signup">
-                  <button className="sign-up-button">
-                    Sign up
-                  </button>
+              <Link to="/user-signup">
+                <button className="sign-up-button">
+                  Sign up
+                </button>
               </Link>
           </div>
         </div>

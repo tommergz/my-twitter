@@ -1,9 +1,13 @@
 .users-container {
-  flex: 0.3;
+  width: 25%;
   padding-top: 9px;
   border: 2px solid rgb(116, 110, 110);
   overflow-y: scroll;
   overflow-x: hidden;
+}
+
+.users-container::-webkit-scrollbar {
+  display: none;
 }
 
 .users-container h1 {
