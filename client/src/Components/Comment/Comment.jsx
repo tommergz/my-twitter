@@ -226,7 +226,6 @@ const EditComment = ({socket, id, editCommentInfo, setComments, setEditCommentIn
       .then(async (response) => {
         const url = `http://localhost:5000/comments/${id}`
         const {data} = await axios.get(url)
-        // setComments(data.comments)
         socket.emit('comments', data.comments)
       })
       .catch((error) => {

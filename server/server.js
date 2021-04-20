@@ -26,7 +26,6 @@ const mongoConnectionEssentials = {
 }
 
 mongoose.connect(mongoURI, mongoConnectionEssentials, (err) => {
-  // mongoose.connection.collections.usermodels.drop()
   if (err) {
     return console.log(err)
   }
