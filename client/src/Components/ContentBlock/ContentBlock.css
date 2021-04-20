@@ -48,6 +48,7 @@
 
 .tweet > h4 {
   width: 90%;
+  min-height: 19px;
 }
 
 .user-name {
@@ -178,4 +179,45 @@
   color: white;
   font-weight: bolder;
   cursor: pointer;
+}
+
+@media (max-width: 850px) {
+  .content-container {
+    width: 65%;
+  }
+}
+
+@media (max-width: 500px) {
+  .content-container {
+    width: 100%;
+    border: none;
+    border-top: 2px solid rgb(116, 110, 110);
+  }
+
+  .tweet-box-container {
+    padding: 0 1em;
+  }
+
+  .user {
+    flex-direction: column;
+  }
+
+  .user-tag {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 300px) {
+
+  .tweet-box-title, .tweet-box, .tweet-file-upload {
+    padding-left: 0;
+  }
+
+  .user-profile {
+    display: none;
+  }
+
+  .tweet {
+    margin-left: 0;
+  }
 }

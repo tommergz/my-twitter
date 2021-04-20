@@ -3,3 +3,23 @@
   justify-content: space-between;
   height: 100vh;
 }
+
+@media (max-width: 500px) {
+  .home-container {
+    flex-direction: column;
+    justify-content: unset;
+  }
+
+  .profile-img-wrapper {
+    display: none;
+  }
+
+  .tweet-toggle-home-icon {
+    margin-bottom: 0;
+  }
+
+  .tweet-toggle-container {
+    overflow-y: unset;
+    overflow-x: unset;
+  }
+}

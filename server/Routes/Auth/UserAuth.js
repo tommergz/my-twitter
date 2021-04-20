@@ -20,7 +20,13 @@ router.post('/user-register', (request, response) => {
     if (!username || !password || !verifiedPassword) {
       return response
         .status(400)
-        .json({msg:'All fields have to be entered'})
+        .json({msg:'Username, password and verified password fields have to be entered'})
+    }
+
+    if (password !== verifiedPassword) {
+      return response
+        .status(400)
+        .json({msg:'The password and confirm password fields do not match'})
     }
 
     const user = await userModel.findOne({username:username})
@@ -28,35 +34,56 @@ router.post('/user-register', (request, response) => {
       return response.status(400).json({msg:'User with this username already exists'})
     }
 
-    cloudinary.uploader.upload(
-      profileImage.path,
-      { folder: "/Twitter-Clone/profiles"},
-      async (error, res) => {
-        if (error) {
-          return console.log(error)
+    if (profileImage) {
+      cloudinary.uploader.upload(
+        profileImage.path,
+        { folder: "/Twitter-Clone/profiles"},
+        async (error, res) => {
+          if (error) {
+            return console.log(error)
+          }
+          try {
+            const profileIamge_url = res.secure_url
+            const salt = await Bcrypt.genSalt(15)
+            const hasehedPassword = await Bcrypt.hash(password, salt)
+            const newUser = new userModel({
+              username,
+              mail,
+              password: hasehedPassword,
+              profile_pic: profileIamge_url
+            })
+            const savedUser = await newUser.save()
+  
+            const token = JWT.sign({ id: savedUser._id }, process.env.jwt_secret)
+          
+            return response
+              .status(201)
+              .json({token:token, profile_pic:savedUser.profile_pic})
+          } catch (e) {
+            console.log(e.message);
+          }
         }
-        try {
-          const profileIamge_url = res.secure_url
-          const salt = await Bcrypt.genSalt(15)
-          const hasehedPassword = await Bcrypt.hash(password, salt)
-          const newUser = new userModel({
-            username,
-            mail,
-            password: hasehedPassword,
-            profile_pic: profileIamge_url
-          })
-          const savedUser = await newUser.save()
+      )
+    } else {
+      try {
+        const salt = await Bcrypt.genSalt(15)
+        const hasehedPassword = await Bcrypt.hash(password, salt)
+        const newUser = new userModel({
+          username,
+          mail,
+          password: hasehedPassword,
+        })
+        const savedUser = await newUser.save()
 
-          const token = JWT.sign({ id: savedUser._id }, process.env.jwt_secret)
-        
-          return response
-            .status(201)
-            .json({token:token, profile_pic:savedUser.profile_pic})
-        } catch (e) {
-          console.log(e.message);
-        }
+        const token = JWT.sign({ id: savedUser._id }, process.env.jwt_secret)
+      
+        return response
+          .status(201)
+          .json({token:token, profile_pic:savedUser.profile_pic})
+      } catch (e) {
+        console.log(e.message);
       }
-    )
+    }
   })
 })
 

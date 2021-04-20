@@ -3,6 +3,8 @@ import { Redirect } from "react-router"
 import "../../StyleSheet/Form.css"
 import axios from 'axios'
 import {Link} from 'react-router-dom'
+import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
+import Loading from '../Loading/Loading'
 
 export default class SignUp extends Component {
     state = {
@@ -11,7 +13,8 @@ export default class SignUp extends Component {
       password: '',
       vPassword: '',
       image: null,
-      redirect: false
+      redirect: false,
+      loading: false
     }
 
   handleForm = (e) => {
@@ -23,6 +26,10 @@ export default class SignUp extends Component {
   signUp = (e) => {
     e.preventDefault()
     
+    this.setState({
+      loading: true
+    })
+
     const data = new FormData()
     data.append('username', this.state.username)
     data.append('mail', this.state.mail)
@@ -43,14 +50,32 @@ export default class SignUp extends Component {
         })
       })
       .catch((error) => {
+        this.setState({
+          loading: false
+        })
+        alert(error.response.data.msg)
         console.log(error);
       })
   }
+
+  uploadImageButtonRef = React.createRef()
+  
+  uploadImg = () => {
+    this.uploadImageButtonRef.current.click()
+  }
+
   render() {
-    const redirect = this.state.redirect
+    const {redirect, image, loading} = this.state
+    let fileName = ''
+    if (image && image.name.length > 20) {
+      let fullFileName = image.name
+      fileName = fullFileName.slice(0,9) + '...' + fullFileName.slice(-9)
+    } else if (image) {
+      fileName = image.name
+    }
     return (
       redirect ? 
-      <Redirect to="/" /> : 
+      <Redirect to="/home" /> : 
       <div className="form-container-wrapper">
         <div className="form-container">
           <form className="form">
@@ -78,16 +103,27 @@ export default class SignUp extends Component {
             <label>Verify Password</label>
             <input onChange={this.handleForm} type="password" id="vPassword"/>
             <label>Profile Picture</label>
-            <input onChange={this.handleForm} type="file" id="image"/>
+            <div className="file">
+              <input 
+                ref={this.uploadImageButtonRef}
+                type="file" 
+                hidden
+                onChange={this.handleForm}
+                id="image"
+              />
+              <SystemUpdateAltIcon className="upload-image" onClick={this.uploadImg} />
+              <span className="image-name">{fileName}</span>
+            </div>
             <button onClick={this.signUp}>Sign up</button>
           </form>
           <span className="or">Or</span>
           <Link to="/user-signin">
             <button className="sign-up-button">
-              Sign in
+              Log in
             </button>
           </Link>
         </div>
+        {loading ? <Loading /> : null}
       </div>
     )
   }

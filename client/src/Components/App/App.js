@@ -18,6 +18,9 @@ function App() {
         <Route path="/user-signin">
           <SignIn />
         </Route>
+        <Route path="/home">
+          <Home />
+        </Route>
         <Route path="/">
           {
             currentUser ? <Home /> : <SignIn />

@@ -3,13 +3,15 @@ import { Redirect } from "react-router"
 import "../../StyleSheet/Form.css"
 import axios from 'axios'
 import {Link} from 'react-router-dom'
+import Loading from '../Loading/Loading'
 
 export default class SignIn extends Component {
 
   state = {
     username: '',
     password: '',
-    redirect: false
+    redirect: false,
+    loading: false
   }
   
   handleForm = (e) => {
@@ -20,7 +22,11 @@ export default class SignIn extends Component {
 
   signIn = (e) => {
     e.preventDefault()
-    
+
+    this.setState({
+      loading: true
+    })
+        
     const data = new FormData()
     data.append('username', this.state.username)
     data.append('password', this.state.password)
@@ -37,14 +43,18 @@ export default class SignIn extends Component {
         })
       })
       .catch((error) => {
+        this.setState({
+          loading: false
+        })
+        alert('Wrong login or password')
         console.log(error);
       })
   }
   render() {
-    const redirect = this.state.redirect
+    const {redirect, loading} = this.state
     return (
       redirect ? 
-        <Redirect to="/" /> : 
+        <Redirect to="/home" /> : 
         <div className="form-container-wrapper">
           <div className="form-container">
             <form className="form">
@@ -71,6 +81,7 @@ export default class SignIn extends Component {
                 </button>
               </Link>
           </div>
+          {loading ? <Loading /> : null}
         </div>
     )
   }

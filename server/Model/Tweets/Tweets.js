@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
  
 const tweetSchema = mongoose.Schema({
   user: { type: String, required: true },
-  tweet: { type: String, required: true },
+  tweet: { type: String, required: false },
   profile: { type: String, required: true },
   file: { type: String, required: false, default: null },
   file_id: { type: String, required: false, default: null},

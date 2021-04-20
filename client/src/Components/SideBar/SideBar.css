@@ -1,27 +1,49 @@
-.side-bar-container {
+.tweet-toggle-container {
   width: 20%;
   border: 2px solid rgb(116, 110, 110);
   overflow-y: scroll;
   overflow-x: hidden;
 }
 
-.side-bar-container::-webkit-scrollbar {
+.tweet-toggle-container::-webkit-scrollbar {
   display: none;
 }
 
-.side-bar-home-icon {
+.tweet-toggle-home-icon {
   margin-bottom: 1.5em;
   margin-left: 2.5em;
   cursor: pointer;
   margin-top: 7px;
 }
 
-.side-bar-twitter-icon {
+.tweet-toggle-twitter-icon {
   color: rgb(0, 162, 255);
 }
 
-.side-bar {
-  margin-left: 0.5em;
+.profile-img-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.tweet-toggle-profile-img {
+  display: flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  border-radius: 35px !important;
+  width: 70% !important;
+  height: 100% !important;
+}
+
+.nikname-wrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+  padding: 0.5em 2em;
+}
+
+.nikname {
+  width: 100%;
+  text-align: center;
 }
 
 .sign-out {
@@ -37,4 +59,58 @@
   color: white;
   font-weight: bolder;
   cursor: pointer;
+  min-width: 100px;
+}
+
+.login-or-signup {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+@media (max-width: 850px) {
+  .tweet-toggle-container {
+    width: 35%;
+  }
+}
+
+@media (max-width: 500px) {
+
+  .nikname-wrapper {
+    display: none;
+  }
+
+  .tweet-toggle-container {
+    width: 100%;
+    border: none;
+    position: relative;
+  }
+
+  .toggles {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .signout {
+    display: none;
+  }
+
+  .sign-out {
+    padding: 0 1.5em;
+  }
+
+  .signin-container {
+    position: absolute;
+    margin-top: -38px;
+    right: 0;
+  }
+}
+
+
+@media (max-width: 300px) {
+
+  .toggles {
+    flex-direction: column;
+    align-items: center;
+  }
 }

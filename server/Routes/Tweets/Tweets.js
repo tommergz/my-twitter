@@ -17,11 +17,13 @@ router.post('/tweet-upload', async (request, response) => {
     const { tweet } = fields
     const { file } = files
 
+    const prorile = user.profile_pic ? user.profile_pic : 'null'
+
     if (!file) {
       const newTweet = new tweetModel({
         user: user.username,
         tweet: tweet,
-        profile: user.profile_pic,
+        profile: prorile,
         date: +Date.now()
       })
 
@@ -37,7 +39,7 @@ router.post('/tweet-upload', async (request, response) => {
         const newTweet = new tweetModel({
           user: user.username,
           tweet: tweet,
-          profile: user.profile_pic,
+          profile: prorile,
           file: file_url,
           file_id: cloudinary_id,
           date: +Date.now()

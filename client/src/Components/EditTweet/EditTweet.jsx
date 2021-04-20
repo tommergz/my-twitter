@@ -39,7 +39,6 @@ const EditTweet = ({socket, tweetInfo, setTweetInfo, setTweets}) => {
       .then(async (response) => {
         const url = 'http://localhost:5000/tweets'
         const {data} = await axios.get(url)
-        // setTweets(data)
         socket.emit('tweets', data)
       })
       .catch((error) => {
@@ -60,7 +59,7 @@ const EditTweet = ({socket, tweetInfo, setTweetInfo, setTweets}) => {
     <div className="edit-tweet-box-wrapper">
       <div className="edit-tweet-box-container">
         <div className="tweet-box">
-          <Avatar alt="Avatar" src={profile_image} />
+          <Avatar alt="User" src={profile_image} />
           <input 
             type="text" 
             placeholder="What's happening?" 
@@ -90,7 +89,7 @@ const EditTweet = ({socket, tweetInfo, setTweetInfo, setTweets}) => {
             }
           </div>
           <div className="tweet-button">
-            <button disabled={tweet === ''} onClick={save}>
+            <button disabled={!tweet && !file} onClick={save}>
               SAVE
             </button>
           </div>

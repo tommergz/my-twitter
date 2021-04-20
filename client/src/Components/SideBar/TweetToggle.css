@@ -1,0 +1,47 @@
+.tweet-toggles {
+  display: flex;
+  flex-direction: column;
+}
+
+.tweet-toggle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+  padding: 0.5em 2em;
+  cursor: pointer;
+}
+
+.tweet-toggle-text {
+  margin-left: 0.5em;
+  font-size: 22px;
+}
+
+.tweet-toggle:hover {
+  background-color: rgb(217, 249, 255);
+  border-radius: 999px;
+  color: rgb(0, 110, 255)
+}
+
+.lighting {
+  color: rgb(0, 110, 255);
+}
+
+@media (max-width: 500px) {
+  .home-container {
+    justify-content: unset;
+  }
+
+  .tweet-toggle {
+    padding: 0.5em;
+  }
+
+  .sign-out {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 300px) {
+  .tweet-toggle {
+    padding: 0 0.5em;
+  }
+}

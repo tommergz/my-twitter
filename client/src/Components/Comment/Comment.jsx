@@ -22,7 +22,7 @@ const Comment = ({socket, id, currentUser, setCommentInfo, loadData}) => {
   socket.on('comments', (comments) => {
     setComments(comments)
   })
-
+  
   useEffect(() => {
     const loadData = async function() {
       const url = `http://localhost:5000/comments/${id}`    
@@ -50,6 +50,7 @@ const Comment = ({socket, id, currentUser, setCommentInfo, loadData}) => {
   }, [comments, socket])
 
   const addComment = () => {
+
     const url = `http://localhost:5000/comments/${id}`
 
     const data = new FormData()
@@ -114,7 +115,7 @@ const Comment = ({socket, id, currentUser, setCommentInfo, loadData}) => {
       }
       <div className="comments-box-container">
         <div className="tweet-box">
-          <Avatar alt="Avatar" src={profile_image} />
+          <Avatar src={profile_image} />
           <input 
             type="text" 
             placeholder="Your comment" 
@@ -134,7 +135,7 @@ const Comment = ({socket, id, currentUser, setCommentInfo, loadData}) => {
             <span className="image-name">{fileName}</span>
           </div>
           <div className="tweet-button">
-            <button disabled={commentText === ''} onClick={addComment}>
+            <button disabled={!commentText && !file} onClick={addComment}>
               Comment
             </button>
           </div>
@@ -252,7 +253,7 @@ const EditComment = ({socket, id, editCommentInfo, setComments, setEditCommentIn
     <div className="edit-comment-box-wrapper">
       <div className="edit-comment-box-container">
         <div className="tweet-box">
-          <Avatar alt="Avatar" src={profile_image} />
+          <Avatar alt="User" src={profile_image} />
           <input 
             type="text" 
             placeholder="What's happening?" 
@@ -282,7 +283,7 @@ const EditComment = ({socket, id, editCommentInfo, setComments, setEditCommentIn
             }
           </div>
           <div className="tweet-button">
-            <button disabled={comment === ''} onClick={save}>
+            <button disabled={!comment && !file} onClick={save}>
               SAVE
             </button>
           </div>

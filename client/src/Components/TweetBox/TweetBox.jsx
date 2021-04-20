@@ -4,7 +4,8 @@ import './TweetBox.css'
 import axios from "axios"
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 
-const TweetBox = ({socket, setTweets}) => {
+const TweetBox = ({socket, myTweets}) => {
+  const currentUser = localStorage.getItem("username")
   const profile_image = localStorage.getItem("profile-image") || ''
   const [tweet, setTweet] = useState('')
   const [file, setFile] = useState('')
@@ -16,6 +17,10 @@ const TweetBox = ({socket, setTweets}) => {
   }
 
   const Tweet = (e) => {
+    if (!currentUser) {
+      alert('Log in or sign up')
+      return
+    }
     const url = "http://localhost:5000/tweet-upload"
     const token = localStorage.getItem("sid")
 
@@ -32,7 +37,6 @@ const TweetBox = ({socket, setTweets}) => {
       .then(async (response) => {
         const url = 'http://localhost:5000/tweets'
         const {data} = await axios.get(url)
-        // setTweets(data)
         socket.emit('tweets', data)
         setTweet("")
         setFile("")
@@ -53,10 +57,10 @@ const TweetBox = ({socket, setTweets}) => {
   return (
     <div className="tweet-box-container">
       <div className="tweet-box-title">
-        <h1>Tweets</h1>   
+        <h1>{myTweets ? 'My tweets' : 'Tweets'}</h1>   
       </div>
       <div className="tweet-box">
-        <Avatar alt="Avatar" src={profile_image} />
+        <Avatar src={profile_image} />
         <input 
           type="text" 
           placeholder="What's happening?" 
@@ -76,7 +80,7 @@ const TweetBox = ({socket, setTweets}) => {
           <span className="image-name">{fileName}</span>
         </div>
         <div className="tweet-button">
-          <button disabled={tweet === ''} onClick={Tweet}>
+          <button disabled={!tweet && !file} onClick={Tweet}>
             TWEET
           </button>
         </div>
